@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>권수현 | BuildWork — Company Profile</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+
+<style>
+/* ===========================================
+   THEME TOKENS — BuildWork 브랜드 (로고 추출색)
+   navy #003870 / teal #086060
+   =========================================== */
+:root{
+  --navy:#003870;          /* 제목·강조 텍스트 (로고 네이비) */
+  --navy-2:#0B4A8C;        /* 카드 헤더 밴드 */
+  --teal:#086060;          /* 포인트 틸 (로고 틸) */
+  --teal-bright:#14A0A0;   /* 커버 그라데이션 밝은 쪽 */
+  --navy-deep:#021A3A;     /* 커버 그라데이션 어두운 쪽 */
+  --teal-pale:#E6F3F3;     /* 연한 틸 배경 */
+  --ink:#1F2A44;
+  --muted:#6B7A99;
+  --line:#C5D0E2;
+  --card:#FFFFFF;
+  --gray-pill:#EEF1F6;
+  --yellow:#FFF2CC;
+  --red:#C0392B;
+  --green:#1E9E4B;
+
+  --font:'Pretendard','Noto Sans KR',sans-serif;
+  --stage-bg:#061428;
+  --slide-bg:#F5F8FD;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ===========================================
+   FIXED 16:9 STAGE
+   =========================================== */
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--stage-bg,#000)}
+.deck-viewport{position:fixed;inset:0;overflow:hidden;background:var(--stage-bg,#000)}
+.deck-stage{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;transform-origin:0 0;background:var(--slide-bg,#fff)}
+.slide{position:absolute;inset:0;width:1920px;height:1080px;overflow:hidden;display:block;visibility:hidden;opacity:0;pointer-events:none;background:var(--slide-bg,#fff)}
+.slide.active,.slide.visible{visibility:visible;opacity:1;pointer-events:auto;z-index:1}
+img,video,canvas,svg{max-width:100%;max-height:100%}
+.deck-controls{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:1000;display:none}
+@media print{
+  html,body{width:1920px;height:auto;overflow:visible;background:#fff}
+  .deck-viewport{position:static;overflow:visible;background:#fff}
+  .deck-stage{position:static;width:auto;height:auto;transform:none!important;background:none}
+  .slide{position:relative;display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;width:1920px;height:1080px;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .deck-controls{display:none!important}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.2s!important}}
+
+.slide{font-family:var(--font);color:var(--ink);transition:opacity .45s ease}
+b,strong{font-weight:700}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.slide.visible .reveal{opacity:1;transform:none}
+.reveal:nth-child(1){transition-delay:.05s}.reveal:nth-child(2){transition-delay:.15s}
+.reveal:nth-child(3){transition-delay:.25s}.reveal:nth-child(4){transition-delay:.35s}
+.reveal:nth-child(5){transition-delay:.45s}.reveal:nth-child(6){transition-delay:.55s}
+.reveal:nth-child(7){transition-delay:.65s}.reveal:nth-child(8){transition-delay:.75s}
+.d1{transition-delay:.1s!important}.d2{transition-delay:.25s!important}.d3{transition-delay:.4s!important}.d4{transition-delay:.55s!important}.d5{transition-delay:.7s!important}
+.reveal-scale{opacity:0;transform:scale(.96);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.slide.visible .reveal-scale{opacity:1;transform:none}
+
+/* ===========================================
+   COVER / SECTION (네이비→틸 그라데이션 + 웨이브)
+   =========================================== */
+.slide.dark{
+  background:
+    radial-gradient(1200px 700px at 88% 8%, rgba(60,200,200,.45), transparent 60%),
+    radial-gradient(900px 600px at 5% 5%, rgba(0,0,0,.55), transparent 60%),
+    linear-gradient(135deg, var(--navy-deep) 0%, #05386E 45%, #0A5C78 72%, var(--teal-bright) 100%);
+  color:#fff;
+}
+.wave{position:absolute;inset:0;width:1920px;height:1080px;pointer-events:none}
+.wave path{fill:none;stroke:rgba(255,255,255,.45);stroke-width:2}
+.wave .thick{stroke:rgba(255,255,255,.12);stroke-width:120;filter:blur(6px)}
+.wave.anim path{stroke-dasharray:3000;stroke-dashoffset:3000;transition:stroke-dashoffset 2.4s ease-out}
+.slide.visible .wave.anim path{stroke-dashoffset:0}
+.slide.visible .wave.anim .thick{transition-delay:.3s}
+
+.cover-tag{position:absolute;left:170px;top:170px;font-size:32px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.9)}
+.cover-title{position:absolute;left:170px;top:250px;font-size:96px;font-weight:800;line-height:1.15;letter-spacing:-.02em;text-shadow:0 4px 24px rgba(0,0,0,.25)}
+.cover-title small{display:block;font-size:40px;font-weight:600;opacity:.9;margin-top:22px;letter-spacing:0}
+.cover-quote{position:absolute;left:170px;top:590px;font-size:30px;font-weight:500;color:rgba(255,255,255,.9);padding-left:22px;border-left:4px solid rgba(255,255,255,.7);line-height:1.5}
+.cover-symbol{position:absolute;right:170px;top:150px;height:420px;width:auto;opacity:.95;filter:drop-shadow(0 12px 30px rgba(0,0,0,.25))}
+.cover-band{position:absolute;left:0;right:0;bottom:0;height:270px;background:#fff;color:var(--navy)}
+.cover-band::after{content:"";position:absolute;left:90px;right:90px;bottom:64px;height:2px;background:#C9D3E3}
+.cover-logo{position:absolute;left:170px;top:88px;height:90px;width:auto}
+.cover-people{display:flex;justify-content:flex-end;gap:90px;padding:86px 170px 0 0}
+.cover-people div{font-size:30px;font-weight:700;line-height:1.5;color:var(--navy)}
+.cover-people span{display:block;font-size:21px;color:var(--muted);font-weight:500}
+
+.sec-title{position:absolute;left:0;right:0;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:108px;font-weight:800;letter-spacing:-.01em;text-shadow:0 6px 30px rgba(0,0,0,.3);text-align:center;line-height:1.2}
+.sec-title small{display:block;font-size:36px;font-weight:500;opacity:.9;margin-top:26px;text-align:center;letter-spacing:0}
+.sec-list{position:absolute;left:50%;top:620px;transform:translateX(-50%);display:flex;gap:28px}
+.sec-list div{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);backdrop-filter:blur(4px);border-radius:14px;padding:22px 40px;font-size:30px;font-weight:600;white-space:nowrap}
+.sec-list div b{display:block;font-size:20px;opacity:.8;font-weight:600;margin-bottom:6px}
+
+/* ===========================================
+   CONTENT SLIDE CHROME
+   =========================================== */
+.slide.content{
+  background:
+    radial-gradient(900px 500px at 8% 100%, rgba(20,160,160,.16), transparent 65%),
+    radial-gradient(700px 400px at 100% 0%, rgba(11,74,140,.16), transparent 60%),
+    linear-gradient(180deg,#F8FAFE 0%,#EEF3FB 100%);
+}
+.running{position:absolute;left:96px;top:30px;font-size:20px;color:#8A97B5;font-weight:500;display:flex;align-items:center;gap:12px}
+.running img{height:26px;width:auto}
+.sec-tag{position:absolute;right:96px;top:30px;font-size:26px;color:var(--navy);font-weight:700}
+.title-box{position:absolute;left:96px;top:70px;background:#fff;padding:18px 48px;border-radius:4px;box-shadow:0 8px 24px rgba(0,56,112,.18);font-size:40px;font-weight:800;color:var(--navy);border-left:10px solid var(--teal)}
+.pageno{position:absolute;right:60px;bottom:32px;font-size:22px;color:#8A97B5}
+.body{position:absolute;left:96px;right:96px;top:185px;bottom:70px}
+
+.lead{font-size:34px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:16px;margin-bottom:26px}
+.lead::before{content:"";width:16px;height:32px;background:var(--teal);border-radius:2px;flex:none}
+.lead.sm{font-size:30px}
+
+ul.l1{list-style:none;font-size:28px;line-height:1.55}
+ul.l1>li{position:relative;padding-left:30px;margin-bottom:10px;font-weight:600;color:var(--navy)}
+ul.l1>li::before{content:"";position:absolute;left:0;top:16px;width:12px;height:12px;background:var(--teal);border-radius:2px}
+ul.l2{list-style:none;font-size:25px;line-height:1.5;margin-top:6px;font-weight:400;color:var(--ink)}
+ul.l2>li{position:relative;padding-left:26px;margin-bottom:6px}
+ul.l2>li::before{content:"–";position:absolute;left:0;color:var(--teal);font-weight:700}
+.hl{color:var(--teal);font-weight:700}
+
+/* 카드 */
+.cards{display:grid;gap:28px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 18px rgba(0,56,112,.08);overflow:hidden;display:flex;flex-direction:column}
+.card .hd{background:var(--navy-2);color:#fff;font-size:27px;font-weight:700;padding:14px 26px}
+.card .hd small{display:block;font-size:19px;font-weight:500;opacity:.85;margin-top:4px}
+.card .hd.t{background:var(--teal)}
+.card .sub{background:var(--teal);color:#fff;font-size:22px;font-weight:600;padding:10px 26px}
+.card .bd{padding:22px 28px;font-size:24px;line-height:1.6;flex:1}
+.card .bd p{margin-bottom:10px}
+.card .bd ul{list-style:none}
+.card .bd ul li{position:relative;padding-left:22px;margin-bottom:8px}
+.card .bd ul li::before{content:"•";position:absolute;left:2px;color:var(--teal);font-weight:800}
+.pill{background:var(--gray-pill);border-radius:999px;padding:12px 26px;font-size:24px;font-weight:600;color:var(--navy);display:inline-flex;align-items:center;gap:12px}
+.pill::before{content:"✓";width:34px;height:34px;border-radius:50%;background:var(--teal);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.tag{display:inline-block;background:var(--teal-pale);color:var(--teal);border:1px solid #B9DDDD;border-radius:6px;padding:4px 12px;font-size:19px;font-weight:600;margin:2px 4px 2px 0;white-space:nowrap}
+.note{font-size:20px;color:var(--muted);line-height:1.5}
+.callout{background:#fff;border-left:8px solid var(--teal);border-radius:6px;padding:20px 32px;font-size:26px;line-height:1.5;color:var(--navy);box-shadow:0 6px 18px rgba(0,56,112,.08)}
+.callout.warn{border-left-color:#D9A400;background:var(--yellow);color:#5A4A00;font-size:21px}
+
+/* 표 */
+table.tb{border-collapse:collapse;width:100%;font-size:24px;background:#fff;box-shadow:0 6px 18px rgba(0,56,112,.08)}
+table.tb th{background:var(--navy-2);color:#fff;font-weight:700;padding:14px 22px;text-align:left;border:1px solid #1E5A9C}
+table.tb td{padding:12px 22px;border:1px solid var(--line);vertical-align:middle;line-height:1.4}
+table.tb tr:nth-child(even) td{background:#F3F6FC}
+table.tb td:first-child{font-weight:600;color:var(--navy);white-space:nowrap}
+table.tb.sm{font-size:22px}
+table.tb.sm td{padding:11px 18px}
+table.tb a{color:var(--teal);text-decoration:none;font-size:19px;word-break:break-all}
+table.tb a:hover{text-decoration:underline}
+
+/* 3축 포지셔닝 */
+.axis{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.axis .ax{background:#fff;border:1px solid var(--line);border-radius:12px;padding:44px 40px 48px;box-shadow:0 6px 18px rgba(0,56,112,.08);position:relative;overflow:hidden}
+.axis .ax::before{content:"";position:absolute;left:0;top:0;right:0;height:8px;background:linear-gradient(90deg,var(--navy),var(--teal))}
+.axis .ax .n{font-size:20px;font-weight:700;color:var(--teal);letter-spacing:.08em;margin-bottom:8px}
+.axis .ax .t{font-size:40px;font-weight:800;color:var(--navy);margin-bottom:14px}
+.axis .ax .d{font-size:26px;line-height:1.55;color:var(--ink)}
+
+.cards.detail .card .bd{font-size:27px;line-height:1.7;padding:28px 30px}
+.cards.detail .card .bd ul li{margin-bottom:14px}
+
+/* 참여 형태 뱃지 */
+.bdg{display:inline-block;border-radius:6px;padding:4px 12px;font-size:18px;font-weight:700;white-space:nowrap;line-height:1.3;vertical-align:middle}
+.bdg.run{background:#E3EDF9;color:var(--navy);border:1px solid #BFD3EC}
+.bdg.adv{background:var(--teal-pale);color:var(--teal);border:1px solid #B9DDDD}
+.bdg.etc{background:#F0F1F4;color:#5B6478;border:1px solid #D5D9E2}
+.card .hd .bdg{float:right;margin-left:12px;margin-top:2px}
+.cards.detail .card .hd .bdg{float:none;align-self:flex-start;margin:0 0 8px 0}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.sum .it{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px 34px;box-shadow:0 6px 18px rgba(0,56,112,.08);display:flex;align-items:center;gap:26px}
+.sum .it .n{font-size:56px;font-weight:800;color:var(--teal);line-height:1}
+.sum .it .n small{font-size:24px;font-weight:700;color:var(--navy);margin-left:4px}
+.sum .it .t{font-size:24px;font-weight:700;color:var(--navy)}
+.sum .it .d{font-size:20px;color:var(--muted);margin-top:4px}
+
+.cards.topics .card .hd{text-align:center}
+.cards.topics .card .bd{text-align:center;display:flex;align-items:center;justify-content:center;word-break:keep-all}
+
+.cards.detail .card .hd{min-height:132px;display:flex;flex-direction:column;justify-content:center;word-break:keep-all}
+.cards.detail .card .bd{word-break:keep-all}
+
+/* AGENDA */
+.agenda{display:grid;grid-template-columns:1fr 1fr;gap:20px 32px;margin-top:10px}
+.agenda .row{display:flex;align-items:center;gap:30px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 34px;box-shadow:0 6px 18px rgba(0,56,112,.08)}
+.agenda .num{width:80px;height:60px;border-radius:8px;background:var(--navy-2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;flex:none}
+.agenda .txt{font-size:31px;font-weight:700;color:var(--navy)}
+
+/* 프로필 요약 */
+.profile-wrap{display:grid;grid-template-columns:1fr 480px;gap:36px;align-items:start}
+.profile-side{background:#fff;border:1px solid var(--line);border-radius:12px;padding:50px 34px;box-shadow:0 6px 18px rgba(0,56,112,.08);text-align:center}
+.profile-side img{height:300px;width:auto;margin:10px auto 26px;display:block}
+.profile-side .nm{font-size:36px;font-weight:800;color:var(--navy)}
+.profile-side .rl{font-size:22px;color:var(--muted);margin-top:6px;margin-bottom:22px}
+.profile-side .kw{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+
+/* 기관 */
+.org-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.org-list{display:flex;flex-direction:column;gap:20px}
+.org-item{display:flex;align-items:center;gap:18px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:26px 30px;font-size:29px;font-weight:600;color:var(--navy);box-shadow:0 4px 14px rgba(0,56,112,.06)}
+.org-item::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--teal);flex:none}
+.org-item small{font-size:20px;color:var(--muted);font-weight:500;margin-left:6px}
+
+/* CONTACT */
+.contact{position:absolute;left:170px;top:190px;color:#fff}
+.contact .big{font-size:88px;font-weight:800;line-height:1.2;letter-spacing:-.02em;text-shadow:0 4px 24px rgba(0,0,0,.25)}
+.contact .sub{font-size:32px;font-weight:500;margin-top:30px;opacity:.92}
+.contact .who{margin-top:70px;font-size:34px;font-weight:700}
+.contact .who span{font-weight:500;opacity:.9}
+.contact .mail{margin-top:14px;font-size:32px;font-weight:600;display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:14px 30px;backdrop-filter:blur(4px)}
+.contact .q{margin-top:60px;font-size:28px;opacity:.9;padding-left:20px;border-left:4px solid rgba(255,255,255,.7)}
+.contact-logo{position:absolute;right:170px;bottom:120px;height:120px;width:auto;opacity:.95}
+
+
+/* EDIT MODE */
+.edit-hotzone{position:fixed;top:0;left:0;width:80px;height:80px;z-index:10000;cursor:pointer}
+.edit-toggle{position:fixed;top:14px;left:14px;width:48px;height:48px;border-radius:50%;border:none;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:20px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s;z-index:10001}
+.edit-toggle.show,.edit-toggle.active{opacity:1;pointer-events:auto}
+.edit-toggle.active{background:#FFE58A}
+body.editing [contenteditable="true"]{outline:2px dashed rgba(8,96,96,.6);outline-offset:2px;cursor:text}
+.edit-status{position:fixed;left:72px;top:22px;font-size:14px;color:#fff;background:rgba(0,0,0,.6);padding:6px 12px;border-radius:8px;font-family:var(--font);opacity:0;transition:opacity .3s;z-index:10001;pointer-events:none}
+.edit-status.show{opacity:1}
+.deck-controls{font-family:var(--font);color:rgba(255,255,255,.7);font-size:13px;background:rgba(0,0,0,.35);padding:6px 14px;border-radius:999px;letter-spacing:.05em;user-select:none}
+</style>
+</head>
+<body>
+
+<div class="edit-hotzone"></div>
+<button class="edit-toggle" id="editToggle" title="편집 모드 (E)">✏️</button>
+<div class="edit-status" id="editStatus">편집 모드 — 텍스트를 클릭해 수정, Ctrl+S 저장</div>
+
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide dark" data-nav="표지">
+  <svg class="wave anim" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+    <path class="thick" d="M-100,700 C300,500 500,950 900,760 S1500,420 2020,640"/>
+    <path d="M-100,720 C300,520 500,970 900,780 S1500,440 2020,660"/>
+    <path d="M-100,760 C320,560 520,1010 920,820 S1520,480 2020,700"/>
+    <path d="M-100,660 C280,460 480,910 880,720 S1480,380 2020,600"/>
+  </svg>
+  <div class="cover-tag reveal">[ Company Profile ]</div>
+  <h1 class="cover-title reveal d2">권수현 <span style="opacity:.6;font-weight:500">|</span> BuildWork
+    <small>데이터를 분석하고, 보이게 하고, 가르치는 일</small>
+  </h1>
+  <div class="cover-quote reveal d3">배운 것은 업무에, 분석한 것은 인사이트로</div>
+  <img class="cover-symbol reveal-scale" src="about_profile-assets/logo-symbol-white.png" alt="BuildWork 심볼">
+  <div class="cover-band">
+    <img class="cover-logo reveal d2" src="about_profile-assets/logo-horizontal.png" alt="BuildWork">
+    <div class="cover-people">
+      <div class="reveal d3"><span>역할</span>대표 · 강사 · 연구자</div>
+      <div class="reveal d4"><span>분야</span>데이터 분석 · 시각화 · AI 강의</div>
+      <div class="reveal d5"><span>Contact</span>hohoho3060@naver.com</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. 목차 ============ -->
+<section class="slide content" data-nav="목차">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="title-box">목차</div>
+  <div class="body">
+    <div class="agenda">
+      <div class="row reveal"><div class="num">1</div><div class="txt">BuildWork 소개</div></div>
+      <div class="row reveal"><div class="num">2</div><div class="txt">한눈에 보는 프로필</div></div>
+      <div class="row reveal"><div class="num">3</div><div class="txt">학력</div></div>
+      <div class="row reveal"><div class="num">4</div><div class="txt">경력 (강의)</div></div>
+      <div class="row reveal"><div class="num">5</div><div class="txt">주요 프로젝트</div></div>
+      <div class="row reveal"><div class="num">6</div><div class="txt">연구 수행 프로젝트 · 자문 이력</div></div>
+      <div class="row reveal"><div class="num">7</div><div class="txt">전문 분야 &amp; 기술 스택</div></div>
+      <div class="row reveal"><div class="num">8</div><div class="txt">Contact</div></div>
+    </div>
+  </div>
+  <div class="pageno">2</div>
+</section>
+
+<!-- ============ 3. BuildWork 소개 ============ -->
+<section class="slide content" data-nav="소개">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">1. BuildWork 소개</div>
+  <div class="title-box">BuildWork 소개</div>
+  <div class="body">
+    <div class="lead reveal">쌓인 데이터를, 읽히는 인사이트로</div>
+    <ul class="l1 reveal d1">
+      <li>교육과 연구의 데이터를 다루는 지식 플랫폼
+        <ul class="l2">
+          <li>직접 가르치고, 데이터를 분석하고, 복잡한 결과를 누구나 한눈에 읽는 대시보드로 옮겨 왔습니다</li>
+          <li><span class="hl">쌓인 자료를, 판단의 근거로.</span></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="lead sm reveal d2" style="margin-top:70px">BuildWork가 하는 세 가지 일</div>
+    <div class="axis">
+      <div class="ax reveal d2"><div class="n">01 · ANALYSIS</div><div class="t">데이터 분석</div><div class="d">크롤링 · 통계 · 텍스트마이닝</div></div>
+      <div class="ax reveal d3"><div class="n">02 · VISUALIZATION</div><div class="t">데이터 시각화</div><div class="d">대시보드 · IR 시각화</div></div>
+      <div class="ax reveal d4"><div class="n">03 · EDUCATION</div><div class="t">AI 강의</div><div class="d">생성형 AI · AI 에이전트 · 교사 연수</div></div>
+    </div>
+    <div class="reveal d5" style="margin-top:70px"><span class="pill" style="font-size:27px;padding:16px 34px">2026년 청춘잡담 여성창업자금지원 기업 선정</span></div>
+  </div>
+  <div class="pageno">3</div>
+</section>
+
+<!-- ============ 4. 한눈에 보는 프로필 ============ -->
+<section class="slide content" data-nav="프로필">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">2. 한눈에 보는 프로필</div>
+  <div class="title-box">한눈에 보는 프로필</div>
+  <div class="body">
+    <div class="profile-wrap">
+      <table class="tb reveal" style="font-size:27px">
+        <tr><th style="width:170px">구분</th><th>내용</th></tr>
+        <tr><td>이름</td><td>권수현</td></tr>
+        <tr><td>소속</td><td>BuildWork 대표</td></tr>
+        <tr><td>학력</td><td>한국기술교육대학교 컴퓨터공학부 박사과정 재학 (2026~)</td></tr>
+        <tr><td>전공</td><td>컴퓨터공학 (학사) · 인력개발 (석사) · 컴퓨터공학 (박사과정)</td></tr>
+        <tr><td>강의</td><td>정보기술개발 직업훈련교사 3년 · AI 기초 입문 과정 강사 · AI 활용 특강</td></tr>
+        <tr><td>연구</td><td>교육기관 · 공공기관 데이터 분석 프로젝트 <b>11건</b> 수행</td></tr>
+        <tr><td>키워드</td><td>학습분석 · 데이터 시각화 · 생성형 AI · 직업훈련 · HRD</td></tr>
+      </table>
+      <div class="profile-side reveal d2">
+        <img src="about_profile-assets/logo-vertical.png" alt="BuildWork">
+        <div class="nm">권수현</div>
+        <div class="rl">BuildWork 대표 · 강사 · 연구자</div>
+        <div class="kw">
+          <span class="tag">학습분석</span><span class="tag">데이터 시각화</span><span class="tag">생성형 AI</span><span class="tag">직업훈련</span><span class="tag">HRD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">4</div>
+</section>
+
+<!-- ============ 5. 학력 ============ -->
+<section class="slide content" data-nav="학력">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">3. 학력</div>
+  <div class="title-box">학력</div>
+  <div class="body">
+    <table class="tb reveal">
+      <tr><th style="width:190px">기간</th><th>학위 · 과정</th><th style="width:300px">전공</th><th style="width:520px">논문 / 작품</th></tr>
+      <tr><td>2026 ~</td><td>한국기술교육대학교 컴퓨터공학부 <b>박사과정</b> 재학 중</td><td>컴퓨터공학</td><td style="color:var(--muted)">–</td></tr>
+      <tr><td>2024 ~ 2026</td><td>한국기술교육대학교 테크노인력개발전문대학원 <b>석사</b></td><td>인력개발전공</td><td>AI를 활용한 프로그래밍 교육의 통합적 문헌 고찰</td></tr>
+      <tr><td>2017 ~ 2022</td><td>한국기술교육대학교 <b>학사</b></td><td>컴퓨터공학 (HRD 부전공)</td><td>딥러닝 기반 이미지 분석을 활용한 작문 로봇 개발</td></tr>
+    </table>
+    <div class="cards reveal d2" style="grid-template-columns:1fr 80px 1fr 80px 1fr;align-items:center;margin-top:60px;gap:0">
+      <div class="card"><div class="hd">공학</div><div class="bd">컴퓨터공학 학사 · 박사과정<br><span class="note">기술을 만들고 가르치는 힘</span></div></div>
+      <div style="text-align:center;font-size:40px;color:var(--teal);font-weight:800">+</div>
+      <div class="card"><div class="hd t">교육</div><div class="bd">HRD 부전공 · 인력개발 석사<br><span class="note">교육을 설계하고 검증하는 힘</span></div></div>
+      <div style="text-align:center;font-size:40px;color:var(--teal);font-weight:800">=</div>
+      <div class="callout" style="font-size:27px;font-weight:700;text-align:center">기술을 이해하고, <br>배움을 설계합니다.</div>
+    </div>
+  </div>
+  <div class="pageno">5</div>
+</section>
+
+<!-- ============ 6. 경력 (강의) ============ -->
+<section class="slide content" data-nav="경력">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">4. 경력 (강의)</div>
+  <div class="title-box">경력 (강의)</div>
+  <div class="body">
+    <table class="tb reveal">
+      <tr><th style="width:280px">기간</th><th style="width:480px">직위</th><th>기관</th></tr>
+      <tr><td>상시</td><td><b>AI 활용 특강</b> 강사</td><td>능력개발교육원 · 대학원 · 대학교 · 상공회의소</td></tr>
+      <tr><td>2025.10 ~ 2026.02</td><td><b>AI 기초 입문 과정</b> 강사</td><td>한국기술교육대학교 능력개발교육원</td></tr>
+      <tr><td>2022.06 ~ 2025.09</td><td><b>정보기술개발 직업훈련교사</b></td><td>그린컴퓨터아트학원 (Java / Spring / React 웹개발)</td></tr>
+    </table>
+    <div class="lead sm reveal d2" style="margin-top:80px">AI 활용 특강 주요 주제</div>
+    <div class="cards topics" style="grid-template-columns:repeat(4,1fr);gap:24px;height:210px">
+      <div class="card reveal d2"><div class="hd t" style="font-size:22px">평가 혁신</div><div class="bd">Claude Code를 활용한 직업훈련 평가 혁신 및 AI 에이전트 설계</div></div>
+      <div class="card reveal d3"><div class="hd t" style="font-size:22px">연구 에이전트</div><div class="bd">생성형 AI를 활용한 연구 에이전트 설계</div></div>
+      <div class="card reveal d4"><div class="hd t" style="font-size:22px">통계 · 시각화</div><div class="bd">AI를 활용한 통계 분석 및 데이터 시각화</div></div>
+      <div class="card reveal d5"><div class="hd t" style="font-size:22px">교사 자격과정</div><div class="bd">직업훈련교사 자격과정 생성형 AI 기초 온라인 강의</div></div>
+    </div>
+  </div>
+  <div class="pageno">6</div>
+</section>
+
+<!-- ============ 7. 주요 프로젝트 ============ -->
+<section class="slide content" data-nav="주요 프로젝트">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">5. 주요 프로젝트</div>
+  <div class="title-box">주요 프로젝트 (대표 5건)</div>
+  <div class="body">
+    <table class="tb sm reveal">
+      <tr><th style="width:430px">프로젝트</th><th style="width:210px">기간</th><th>내용</th><th style="width:250px">키워드</th><th style="width:340px">링크 (내부용)</th></tr>
+      <tr><td>AI 디지털 교육자료(AIDT) 효과성 연구</td><td>2025.08 ~ 2026.04</td><td>AI 기반 디지털 교육자료의 학습 효과성을 데이터 분석으로 검증</td><td>AI · 교육 · 데이터 분석</td><td><a href="https://guide-app-theta.vercel.app/" target="_blank">guide-app-theta.vercel.app</a></td></tr>
+      <tr><td>AI·빅데이터 기반 직업훈련기관 프로파일링 분석</td><td>2025.10 ~ 2026.02</td><td>직업훈련기관 특성 분석 및 인사이트 도출 대시보드</td><td>빅데이터 · 대시보드</td><td><a href="https://dashboard-beryl-alpha-50.vercel.app" target="_blank">dashboard-beryl-alpha-50.vercel.app</a></td></tr>
+      <tr><td>AI 기반 영어 맞춤형 학습 사이트 구축</td><td>2025.09 ~ 2026.03</td><td>AI 기반 모듈형 학습 사이트 구축</td><td>맞춤형학습 · 영어</td><td><a href="https://imazin.vercel.app/" target="_blank">imazin.vercel.app</a></td></tr>
+      <tr><td>정보기술개발 직업훈련교사 포트폴리오</td><td>상시</td><td>Java/Spring/React 웹개발 강의 이력 포트폴리오</td><td>Java · Spring · React · NCS</td><td><a href="https://ncsdevapp.vercel.app/" target="_blank">ncsdevapp.vercel.app</a></td></tr>
+      <tr><td>직무 로드맵 기반 STEP 강의 추천</td><td>상시</td><td>정보기술개발 직무 로드맵 기반 맞춤형 STEP 강의 진단·추천</td><td>직무 로드맵 · STEP</td><td><a href="https://jobpath-ai.vercel.app/diagnose" target="_blank">jobpath-ai.vercel.app/diagnose</a></td></tr>
+    </table>
+  </div>
+  <div class="pageno">7</div>
+</section>
+
+<!-- ============ 8. 섹션: 프로젝트 · 자문 ============ -->
+<section class="slide dark" data-nav="수행 · 자문 이력">
+  <svg class="wave anim" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+    <path class="thick" d="M-100,700 C300,500 500,950 900,760 S1500,420 2020,640"/>
+    <path d="M-100,720 C300,520 500,970 900,780 S1500,440 2020,660"/>
+    <path d="M-100,760 C320,560 520,1010 920,820 S1520,480 2020,700"/>
+  </svg>
+  <div class="sec-title reveal" style="bottom:260px"><div>6. 연구 수행 프로젝트 · 자문 이력<small>2023 ~ 2026 · 연구 수행 7건 · 자문 4건 · 칼럼 1건</small></div></div>
+  <div class="sec-list">
+    <div class="reveal d1"><b>6-1 · 연구 수행 프로젝트</b>7건 · 데이터 분석 · 시각화 · 과정 설계</div>
+    <div class="reveal d2"><b>6-2 · 자문 · 칼럼</b>5건 · 기술 검토 · 분석 자문 · UI/UX · 집필</div>
+    <div class="reveal d3"><b>6-3 ~ 6-5 · 수행 상세</b>프로젝트별 역할과 결과</div>
+  </div>
+</section>
+
+<!-- ============ 9. 6-1 연구 수행 프로젝트 ============ -->
+<section class="slide content">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">6. 연구 수행 프로젝트 · 자문 이력</div>
+  <div class="title-box">6-1. 연구 수행 프로젝트 (7건)</div>
+  <div class="body">
+    <div class="lead sm reveal">연구 과업을 직접 수행한 프로젝트</div>
+    <table class="tb sm reveal d1">
+      <tr><th style="width:230px">기간</th><th>프로젝트</th><th style="width:400px">기관</th><th style="width:300px">역할</th></tr>
+      <tr><td>2026.09 ~ 2026.12</td><td>STEP 학습자 페르소나 분석 및 맞춤형 서비스 전략 연구</td><td>한국기술교육대학교 온라인평생교육원</td><td>데이터 분석 · 페르소나 정의</td></tr>
+      <tr><td>2026.05 ~ 2026.09</td><td>성인 대상 직업공통능력인증 모의 테스트 및 수요조사 연구</td><td>대한상공회의소</td><td>수요조사 분석 · 시각화</td></tr>
+      <tr><td>2026.03 ~ 2026.05</td><td>학교 현장의 내신 평가 현황 분석을 위한 성취분포 비율 수집 및 분석</td><td>한국교육과정평가원</td><td>크롤링 · 분석 · 시각화</td></tr>
+      <tr><td>2025.10 ~ 2026.02</td><td>AI·빅데이터 기반 직업훈련기관 프로파일링 및 성과편차 분석체계 고도화 방안 연구</td><td>직업능력심사평가원</td><td>데이터 분석 · 시각화</td></tr>
+      <tr><td>2025.10 ~ 2026.02</td><td>대학교육 통합성과관리체계를 위한 대학 IR 시스템 개선 연구</td><td>한국기술교육대학교 데이터성과센터</td><td>IR 시각화 개선</td></tr>
+      <tr><td>2025.08 ~ 2026.04</td><td>AI 디지털 교육자료(AIDT) 효과성 연구</td><td>한국교과서연구재단</td><td>데이터 분석 전담</td></tr>
+      <tr><td>2025.08</td><td>직업능력개발훈련교사 역량기반 교직훈련과정 개편 방안 연구</td><td>한국기술교육대학교 HRD교육팀</td><td>과정명세서 작성</td></tr>
+    </table>
+  </div>
+  <div class="pageno">9</div>
+</section>
+
+<!-- ============ 10. 6-2 자문 · 칼럼 ============ -->
+<section class="slide content">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">6. 연구 수행 프로젝트 · 자문 이력</div>
+  <div class="title-box">6-2. 자문 · 칼럼 참여 (5건)</div>
+  <div class="body">
+    <div class="lead sm reveal">자문·검토·집필로 참여한 활동</div>
+    <table class="tb sm reveal d1">
+      <tr><th style="width:130px">구분</th><th style="width:230px">기간</th><th>프로젝트</th><th style="width:380px">기관</th><th style="width:290px">역할</th></tr>
+      <tr><td><span class="bdg adv">자문</span></td><td>2026 ~ 진행 중</td><td>AI 기반 NCS 개발·개선 자문 — AI·데이터 기반 직무·교육·역량평가 체계 및 기술 검토</td><td>한국산업인력공단</td><td>기술 자문 (진행 중)</td></tr>
+      <tr><td><span class="bdg adv">자문</span></td><td>2026.02 ~ 2026.03</td><td>직업계고 채용연계형 직무교육과정 취업 성과창출 및 유지 방안 연구</td><td>대한상공회의소</td><td>분석 자문 (텍스트 마이닝)</td></tr>
+      <tr><td><span class="bdg adv">자문</span></td><td>2025.12 ~ 2026.02</td><td>고교교육과정 변화에 따른 2028학년도 대학입학전형 개발 연구</td><td>한국기술교육대학교 입학팀</td><td>분석 자문</td></tr>
+      <tr><td><span class="bdg adv">자문</span></td><td>2024.10 ~ 2024.11</td><td>교육데이터 웹페이지 프로토타입 레이아웃 설계 자문</td><td>한국교육과정평가원</td><td>UI/UX 자문</td></tr>
+      <tr><td><span class="bdg etc">칼럼</span></td><td>2023.10 ~ 2024.09</td><td>STEP 위키 정보기술개발 분야 전문가 칼럼니스트</td><td>한국기술교육대학교 온라인평생교육원</td><td>칼럼니스트</td></tr>
+    </table>
+    <div class="sum" style="margin-top:56px">
+      <div class="it reveal d2"><div class="n">7<small>건</small></div><div><div class="t">연구 수행 프로젝트</div><div class="d">데이터 분석 · 시각화 · 과정 설계</div></div></div>
+      <div class="it reveal d3"><div class="n">4<small>건</small></div><div><div class="t">자문 참여</div><div class="d">기술 검토 · 분석 자문 · UI/UX</div></div></div>
+      <div class="it reveal d4"><div class="n">10<small>곳</small></div><div><div class="t">함께한 기관 · 부서</div><div class="d">공공 · 연구기관 5곳, 대학 부서 5곳</div></div></div>
+    </div>
+  </div>
+  <div class="pageno">10</div>
+</section>
+
+<!-- ============ 11. 6-3 수행 상세 ① ============ -->
+<section class="slide content">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">6. 연구 수행 프로젝트 · 자문 이력</div>
+  <div class="title-box">6-3. 연구 수행 상세 ①</div>
+  <div class="body">
+    <div class="cards detail" style="grid-template-columns:repeat(3,1fr);margin-top:20px;height:560px">
+      <div class="card reveal d1">
+        <div class="hd">AI 디지털 교육자료(AIDT) 효과성 연구<small>한국교과서연구재단 · 2025.08 ~ 2026.04</small></div>
+        <div class="bd"><ul>
+          <li>학습자 행동 로그 기반 분석 지표 정의</li>
+          <li>학습 데이터 DB 구축, Python 기반 통계 분석</li>
+          <li>연구 보고서 작성 지원</li>
+        </ul></div>
+        <div class="sub">데이터 분석 전담</div>
+      </div>
+      <div class="card reveal d2">
+        <div class="hd">직업훈련기관 프로파일링 및 성과편차 분석체계 고도화<small>직업능력심사평가원 · 2025.10 ~ 2026.02</small></div>
+        <div class="bd"><ul>
+          <li>정보기술개발 직종 훈련과정 심층 분석</li>
+          <li>성과 분석 지표 설계</li>
+          <li>Python 기반 데이터 시각화 및 대시보드 구축</li>
+        </ul></div>
+        <div class="sub">데이터 분석 · 시각화</div>
+      </div>
+      <div class="card reveal d3">
+        <div class="hd">대학 IR 시스템 개선 연구<small>한국기술교육대학교 데이터성과센터 · 2025.10 ~ 2026.02</small></div>
+        <div class="bd"><ul>
+          <li>IBM Cognos 기반 대학 성과 지표 시각화 대시보드 구축</li>
+          <li>IR 시스템 개선 방향 도출</li>
+        </ul></div>
+        <div class="sub">IR 시각화 개선</div>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">11</div>
+</section>
+
+<!-- ============ 12. 6-4 수행 상세 ② ============ -->
+<section class="slide content">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">6. 연구 수행 프로젝트 · 자문 이력</div>
+  <div class="title-box">6-4. 연구 수행 상세 ②</div>
+  <div class="body">
+    <div class="cards detail" style="grid-template-columns:1fr 1fr;gap:28px 32px;height:680px">
+      <div class="card reveal d1">
+        <div class="hd">내신 평가 현황 분석을 위한 성취분포 비율 수집·분석<small>한국교육과정평가원 · 2026.03 ~ 2026.05</small></div>
+        <div class="bd"><ul>
+          <li>웹 크롤링 기반 성취분포 비율 데이터 수집</li>
+          <li>Python 통계 분석 및 대시보드 시각화 구현</li>
+        </ul></div>
+      </div>
+      <div class="card reveal d2">
+        <div class="hd">STEP 학습자 페르소나 분석 및 맞춤형 서비스 전략 연구<small>한국기술교육대학교 온라인평생교육원 · 2026.09 ~ 2026.12</small></div>
+        <div class="bd"><ul>
+          <li>STEP 학습자 행동 데이터 분석을 통한 학습자 페르소나 정의</li>
+          <li>페르소나별 맞춤형 서비스 전략 도출</li>
+        </ul></div>
+      </div>
+      <div class="card reveal d3">
+        <div class="hd">직업공통능력인증 모의 테스트 및 수요조사 연구<small>대한상공회의소 · 2026.05 ~ 2026.09</small></div>
+        <div class="bd"><ul>
+          <li>모의 테스트 결과 및 수요조사 데이터 분석</li>
+          <li>통계 분석 결과 시각화</li>
+        </ul></div>
+      </div>
+      <div class="card reveal d4">
+        <div class="hd">직업훈련교사 역량기반 교직훈련과정 개편 연구<small>한국기술교육대학교 HRD교육팀 · 2025.08</small></div>
+        <div class="bd"><ul>
+          <li>직업훈련교사 대상 AI 입문 교육과정 커리큘럼 설계</li>
+          <li>생성형 AI 및 데이터 활용 기초 6회차 교육 모듈 설계</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">12</div>
+</section>
+
+<!-- ============ 13. 6-5 자문 상세 ============ -->
+<section class="slide content">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">6. 연구 수행 프로젝트 · 자문 이력</div>
+  <div class="title-box">6-5. 자문 참여 상세</div>
+  <div class="body">
+    <div class="cards detail" style="grid-template-columns:1fr 1fr;gap:26px 32px;height:640px">
+      <div class="card reveal d1">
+        <div class="hd t"><span class="bdg adv" style="background:#fff">자문 · 진행 중</span>AI 기반 NCS 개발·개선 자문<small>한국산업인력공단 · 2026 ~ 진행 중</small></div>
+        <div class="bd"><ul>
+          <li>AI·데이터 기반 직무·교육·역량평가 체계 검토</li>
+          <li>NCS 개발·개선 과정의 AI 적용 방안 및 기술 자문</li>
+        </ul></div>
+        <div class="sub">기술 자문</div>
+      </div>
+      <div class="card reveal d2">
+        <div class="hd t"><span class="bdg adv" style="background:#fff">자문</span>2028학년도 대학입학전형 개발 연구<small>한국기술교육대학교 입학팀 · 2025.12 ~ 2026.02</small></div>
+        <div class="bd"><ul>
+          <li>성적 등급 체계 변환 모델 설계 (9등급 → 5등급)</li>
+          <li>입학 데이터 시뮬레이션 및 영향 분석</li>
+        </ul></div>
+        <div class="sub">분석 자문</div>
+      </div>
+      <div class="card reveal d3">
+        <div class="hd t"><span class="bdg adv" style="background:#fff">자문</span>직업계고 채용연계형 직무교육과정 취업 성과 연구<small>대한상공회의소 · 2026.02 ~ 2026.03</small></div>
+        <div class="bd"><ul>
+          <li>반정형 인터뷰 데이터 텍스트 마이닝</li>
+          <li>TF-IDF 특징어 분석, 공기어 네트워크 분석, KWIC · 감성 분석</li>
+        </ul></div>
+        <div class="sub">분석 자문 (텍스트 마이닝)</div>
+      </div>
+      <div class="card reveal d4">
+        <div class="hd t"><span class="bdg adv" style="background:#fff">자문</span>교육데이터 웹페이지 프로토타입 설계 자문<small>한국교육과정평가원 · 2024.10 ~ 2024.11</small></div>
+        <div class="bd"><ul>
+          <li>교육데이터 제공 플랫폼 프로토타입 UI/UX 설계 자문</li>
+          <li>웹 인터페이스 레이아웃 구조 검토</li>
+        </ul></div>
+        <div class="sub">UI/UX 자문</div>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">13</div>
+</section>
+
+<!-- ============ 14. 전문 분야 & 기술 스택 ============ -->
+<section class="slide content" data-nav="기술 스택">
+  <div class="running"><img src="about_profile-assets/logo-symbol.png" alt="">BuildWork | Company Profile</div>
+  <div class="sec-tag">7. 전문 분야 &amp; 기술 스택</div>
+  <div class="title-box">전문 분야 &amp; 기술 스택</div>
+  <div class="body">
+    <table class="tb reveal" style="font-size:25px">
+      <tr><th style="width:280px">영역</th><th>세부 역량</th><th style="width:520px">도구</th></tr>
+      <tr><td>데이터 분석</td><td>학습 로그 분석 · 통계 분석 · 시뮬레이션 · 수요조사 분석</td><td><span class="tag">Python</span><span class="tag">통계 분석</span></td></tr>
+      <tr><td>텍스트 마이닝</td><td>TF-IDF · 공기어 네트워크 · KWIC · 감성 분석</td><td><span class="tag">Python NLP</span></td></tr>
+      <tr><td>데이터 수집</td><td>웹 크롤링 · 학습 데이터 DB 구축</td><td><span class="tag">Python</span><span class="tag">DB</span></td></tr>
+      <tr><td>데이터 시각화</td><td>성과 대시보드 · IR 시각화 · 연구 결과 시각화</td><td><span class="tag">IBM Cognos</span><span class="tag">웹 대시보드</span></td></tr>
+      <tr><td>웹 개발</td><td>풀스택 웹 · 학습 플랫폼 · 진단·추천 서비스</td><td><span class="tag">Java</span><span class="tag">Spring</span><span class="tag">React</span><span class="tag">Next.js</span></td></tr>
+      <tr><td>AI 활용 · 교육</td><td>생성형 AI · AI 에이전트 설계 · 커리큘럼 설계</td><td><span class="tag">Claude Code</span><span class="tag">생성형 AI</span></td></tr>
+    </table>
+  </div>
+  <div class="pageno">14</div>
+</section>
+
+<!-- ============ 15. CONTACT ============ -->
+<section class="slide dark" data-nav="Contact">
+  <svg class="wave anim" viewBox="0 0 1920 1080" preserveAspectRatio="none">
+    <path class="thick" d="M-100,700 C300,500 500,950 900,760 S1500,420 2020,640"/>
+    <path d="M-100,720 C300,520 500,970 900,780 S1500,440 2020,660"/>
+    <path d="M-100,760 C320,560 520,1010 920,820 S1520,480 2020,700"/>
+  </svg>
+  <div class="contact">
+    <div class="big reveal">함께 일하고<br>싶으신가요?</div>
+    <div class="sub reveal d1">AI 교육, 강의, 연구 협업에 대한 문의를 환영합니다.</div>
+    <div class="who reveal d2">권수현 <span>· BuildWork 대표</span></div>
+    <div class="reveal d3"><div class="mail">✉ hohoho3060@naver.com</div></div>
+    <div class="q reveal d4">쌓인 자료를, 판단의 근거로.</div>
+  </div>
+  <img class="contact-logo reveal d3" src="about_profile-assets/logo-horizontal-white.png" alt="BuildWork">
+</section>
+
+</main>
+</div>
+
+<div class="deck-controls" id="deckCounter">1 / 15</div>
+
+<script>
+class SlidePresentation{
+  constructor(){
+    this.slides=[...document.querySelectorAll('.slide')];
+    this.stage=document.getElementById('deckStage');
+    this.counter=document.getElementById('deckCounter');
+    this.i=0;
+    this.setupScale();this.setupKeys();this.setupTouch();this.setupWheel();
+    const h=parseInt(location.hash.replace('#',''),10);
+    this.show(isNaN(h)?0:h-1);
+  }
+  setupScale(){
+    const s=()=>{const f=Math.min(innerWidth/1920,innerHeight/1080);
+      this.stage.style.transform=`translate(${(innerWidth-1920*f)/2}px,${(innerHeight-1080*f)/2}px) scale(${f})`};
+    s();addEventListener('resize',s);
+  }
+  show(n){
+    this.i=Math.max(0,Math.min(n,this.slides.length-1));
+    this.slides.forEach((s,k)=>{s.classList.toggle('active',k===this.i);s.classList.toggle('visible',k===this.i)});
+    this.counter.textContent=`${this.i+1} / ${this.slides.length}`;
+    history.replaceState(null,'',`#${this.i+1}`);
+  }
+  next(){this.show(this.i+1)} prev(){this.show(this.i-1)}
+  setupKeys(){
+    addEventListener('keydown',e=>{
+      if(document.body.classList.contains('editing')&&e.target.isContentEditable)return;
+      switch(e.key){
+        case 'ArrowRight':case 'ArrowDown':case ' ':case 'PageDown':e.preventDefault();this.next();break;
+        case 'ArrowLeft':case 'ArrowUp':case 'PageUp':e.preventDefault();this.prev();break;
+        case 'Home':this.show(0);break;case 'End':this.show(this.slides.length-1);break;
+      }
+    });
+  }
+  setupTouch(){
+    let x0=0,y0=0;
+    addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+    addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;
+      if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){dx<0?this.next():this.prev()}
+      else if(Math.abs(dx)<10&&Math.abs(dy)<10&&!document.body.classList.contains('editing')){this.next()}
+    },{passive:true});
+  }
+  setupWheel(){
+    let t=0;
+    addEventListener('wheel',e=>{const now=Date.now();if(now-t<700)return;
+      if(Math.abs(e.deltaY)>20){t=now;e.deltaY>0?this.next():this.prev()}},{passive:true});
+  }
+}
+const deck=new SlidePresentation();
+
+
+class InlineEditor{
+  constructor(){
+    this.isActive=false;
+    this.toggleBtn=document.getElementById('editToggle');
+    this.status=document.getElementById('editStatus');
+    this.selectors='.title-box,.cover-title,.cover-tag,.cover-quote,.cover-people div,.sec-title div,.sec-list div,.agenda .txt,.lead,ul.l1 li,ul.l2 li,.card .hd,.card .sub,.card .bd,.card .bd li,.card .bd p,.pill,.note,.callout,table.tb th,table.tb td,.running,.sec-tag,.axis .t,.axis .d,.axis .n,.org-item,.sum .t,.sum .d,.contact .big,.contact .sub,.contact .who,.contact .mail,.contact .q,.profile-side .nm,.profile-side .rl';
+    this.restore();
+  }
+  toggleEditMode(){
+    this.isActive=!this.isActive;
+    document.body.classList.toggle('editing',this.isActive);
+    this.toggleBtn.classList.toggle('active',this.isActive);
+    this.status.classList.toggle('show',this.isActive);
+    document.querySelectorAll(this.selectors).forEach(el=>{
+      if(this.isActive)el.setAttribute('contenteditable','true');else el.removeAttribute('contenteditable');
+    });
+    if(!this.isActive)this.persist();
+  }
+  key(){return 'buildwork-profile-edits:'+location.pathname}
+  persist(){
+    try{
+      const data={};
+      document.querySelectorAll(this.selectors).forEach((el,i)=>{data[i]=el.innerHTML});
+      localStorage.setItem(this.key(),JSON.stringify(data));
+    }catch(e){}
+  }
+  restore(){
+    try{
+      const raw=localStorage.getItem(this.key());if(!raw)return;
+      const data=JSON.parse(raw);
+      document.querySelectorAll(this.selectors).forEach((el,i)=>{if(data[i]!=null)el.innerHTML=data[i]});
+    }catch(e){}
+  }
+  saveFile(){
+    this.persist();
+    const clone=document.documentElement.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    clone.querySelector('body').classList.remove('editing');
+    const html='<!DOCTYPE html>\n'+clone.outerHTML;
+    const blob=new Blob([html],{type:'text/html'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download=(document.title||'presentation').replace(/[\\/:*?"<>|]/g,'_')+'.html';a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+  }
+}
+const editor=new InlineEditor();
+const hotzone=document.querySelector('.edit-hotzone');
+const editToggle=document.getElementById('editToggle');
+let hideTimeout=null;
+const hideLater=()=>{hideTimeout=setTimeout(()=>{if(!editor.isActive)editToggle.classList.remove('show')},400)};
+hotzone.addEventListener('mouseenter',()=>{clearTimeout(hideTimeout);editToggle.classList.add('show')});
+hotzone.addEventListener('mouseleave',hideLater);
+editToggle.addEventListener('mouseenter',()=>clearTimeout(hideTimeout));
+editToggle.addEventListener('mouseleave',hideLater);
+hotzone.addEventListener('click',()=>editor.toggleEditMode());
+editToggle.addEventListener('click',()=>editor.toggleEditMode());
+document.addEventListener('keydown',e=>{
+  if((e.key==='e'||e.key==='E')&&!e.target.isContentEditable&&!e.ctrlKey&&!e.metaKey)editor.toggleEditMode();
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();editor.saveFile()}
+});
+document.addEventListener('input',e=>{if(editor.isActive)editor.persist()});
+</script>
+<script src="deck-nav/deck-nav.js"></script>
+</body>
+</html>
